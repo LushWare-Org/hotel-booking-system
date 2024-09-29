@@ -34,8 +34,8 @@ const columns = [
     key: 'transaction_id',
   },
   {
-    title: 'Status',
-    dataIndex: 'status',
+    title: 'Status', 
+    dataIndex: 'status', 
     key: 'status',
     render: (status) => {
       const color = status === 'Cancelled' ? 'red' : 'green';
