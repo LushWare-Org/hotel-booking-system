@@ -5,12 +5,14 @@ import Footer from '../components/Footer';
 /*import ExpandMoreIcon from '@mui/icons-material/ExpandMore';*/
 import FAQAccordion from './FAQAccordion';
 import ImageGal from '../components/ImageGal';
+import SearchBar from '../components/SearchBar';
 
 
 const HomeScreen = () => {
   return (
     <div style={{ backgroundColor: '#f5f5f5', padding: '50px 0' }}>
       <Container><br></br>
+        <SearchBar/><br></br>
         <Typography variant="h3" component="div" sx={{ color: '#333', marginBottom: '30px', fontFamily: 'Dancing Script', textAlign:'center'}}>
         Experience the Essence of The Luxury
         </Typography><br></br>

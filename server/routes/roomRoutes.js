@@ -42,4 +42,31 @@ router.post('/', async(req,res) => {
     }
 })
 
+router.get('/search', async(req,res)=>{
+
+    const {checkInDate, checkOutDate, rooms, adults, children} = req.body;
+
+    let search;
+
+    try {
+        
+        if(rooms == 1){
+            search = await Room.find({maxCount: (adults+children)})
+        }
+        else if(rooms > 1){
+            search = await Room.find({maxCount: { $lte: (adults + children) }})
+        }
+
+        if(search == 0) search = await Room.find({maxCount: { $gt: (adults + children) }})
+
+        res.send({search});
+        return search;
+
+    } 
+    catch (error) {
+        res.status(400).json({message: error});
+    }
+
+})
+
 module.exports = router;

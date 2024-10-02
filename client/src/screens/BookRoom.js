@@ -111,7 +111,7 @@ const BookRoom = () => {
   };
 
   return (
-    <Paper elevation={3} style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+    <Paper elevation={3} style={{ padding: '20px', maxWidth: '700px', margin: 'auto' }}>
       <Card>
         <CardMedia
           component="img"
