@@ -1,0 +1,67 @@
+.book-room {
+  padding: 20px;
+  text-align: center;
+}
+
+.room-image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+}
+
+.booking-section {
+  margin-top: 20px;
+}
+
+.booking-section input {
+  margin-right: 10px;
+}
+
+
+.carousel-image-container {
+  position: relative;
+  width: 60%;
+  height: 450px; 
+  overflow: hidden; 
+  margin: 0 auto; 
+}
+
+
+.carousel-image {
+  width: 80%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.carousel-image-container:hover .carousel-image {
+  transform: scale(1.05); 
+}
+
+.arrow-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  z-index: 10; 
+}
+
+.arrow-prev {
+  position: absolute;
+  left: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10; 
+  margin-left: 300px; 
+}
+
+.arrow-next {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%); 
+  cursor: pointer;
+  z-index: 10; 
+  margin-right: 300px; 
+}

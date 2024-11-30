@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import {styled} from '@mui/system';
 import Swal from 'sweetalert2';
 import AdminPanel from './AdminPanel';
+import Footer from '../components/Footer';
 
 const useStyles = styled('div')({
   card: {
@@ -103,13 +104,16 @@ const Account = () => {
               </Grid>
             ))}
           </Grid>
+          <Footer/>
           {admin && (
             <div>
               <AdminPanel />
             </div>
+            
           )}
         </div>
     </div>
+    
   )
 }
 

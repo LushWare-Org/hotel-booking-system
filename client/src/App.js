@@ -1,34 +1,35 @@
-import React from 'react'
-import Navigation from './components/Navigation.js';
-import {BrowserRouter, Route, Link, Routes} from 'react-router-dom';
+import React from 'react';
+import Navigation from './components/Navigation';
+import { Route, Routes } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
-import RoomsList from './screens/Rooms.js';
-import Register from './screens/Register.js';
-import Login from './screens/Login.js';
-import Account from './screens/Account.js';
-import BookRoom from './screens/BookRoom.js'
-import Facilities from './screens/Facilities.js'; 
-import Contact from './screens/Contact.js';
-import AdminPanel from './screens/AdminPanel.js';
-// import AdminPanel from './screens/AdminPanel.js';
+import Rooms from './components/Rooms';
+import Register from './screens/Register';
+import Login from './screens/Login';
+import Account from './screens/Account';
+import BookRoom from './components/BookRoom'; 
+import Facilities from './screens/Facilities';
+import Contact from './screens/Contact';
+import AdminPanel from './screens/AdminPanel';
+import RoomDetails from './components/RoomDetails';
+
 const App = () => {
   return (
     <div>
-        <Navigation/>
-        
-        <Routes>
-          <Route path='/' exact element={<HomeScreen/>}/>
-          <Route path='/rooms' element={<RoomsList/>} />
-          <Route path='/rooms/:id' element={<BookRoom/>} />
-          <Route path='/register' element={<Register/>} />
-          <Route path='/login' element={<Login/>} />
-          <Route path='/account' element={<Account/>} />
-          <Route path='/facilities' element={<Facilities/>} />
-          <Route path='/contact' element={<Contact/>} />
-          <Route path='/admin' element={<AdminPanel/>} />
-        </Routes>
+      <Navigation />
+      <Routes> 
+        <Route path='/' element={<HomeScreen />} />
+        <Route path='/rooms' element={<Rooms />} /> 
+        <Route path='/rooms/:id' element={<BookRoom />} /> 
+        <Route path='/register' element={<Register />} /> 
+        <Route path='/login' element={<Login />} /> 
+        <Route path='/account' element={<Account />} /> 
+        <Route path='/facilities' element={<Facilities />} /> 
+        <Route path='/contact' element={<Contact />} /> 
+        <Route path='/admin' element={<AdminPanel />} /> 
+        <Route path='/rooms/:id' element={<RoomDetails/>}/>
+      </Routes>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

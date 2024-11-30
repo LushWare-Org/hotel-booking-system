@@ -167,7 +167,7 @@ const Navigation = () => {
 
     window.addEventListener('scroll', handleScroll);
 
-    // Cleanup the event listener on component unmount
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -267,7 +267,7 @@ const Navigation = () => {
       <AppBar position="fixed" style={{ backgroundColor: navBackground, boxShadow: 'none', height: '100px', font: 'Playfair Display' }}>
         <Toolbar style={{ display: 'flex', justifyContent: 'space-around', height: '100%' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Tabs value={value} onChange={handleChange} textColor="white" style={{ marginLeft: '20px'}} >
+            <Tabs value={value} onChange={handleChange} textColor="white" style={{ marginLeft: '0px', marginRight:'110px'}} >
               <Tab label="Home" component={Link} to="/" />
               <Tab label="Rooms" component={Link} to="/rooms" />
               <Tab label="Facilities" component={Link} to="/facilities" />

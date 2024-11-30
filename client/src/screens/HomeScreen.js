@@ -5,11 +5,16 @@ import Footer from '../components/Footer';
 /*import ExpandMoreIcon from '@mui/icons-material/ExpandMore';*/
 import FAQAccordion from './FAQAccordion';
 import ImageGal from '../components/ImageGal';
+import LiveChat from '../components/LiveChat';
 
-
+<LiveChat/>
 const HomeScreen = () => {
+
+  
   return (
+    
     <div style={{ backgroundColor: '#f5f5f5', padding: '50px 0' }}>
+       <LiveChat />
       <Container><br></br>
         <Typography variant="h3" component="div" sx={{ color: '#333', marginBottom: '30px', fontFamily: 'Dancing Script', textAlign:'center'}}>
         Experience the Essence of The Luxury

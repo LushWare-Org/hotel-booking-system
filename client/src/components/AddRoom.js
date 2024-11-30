@@ -1,159 +1,238 @@
-import React, { useState } from 'react';
-import Swal from 'sweetalert2';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   TextField,
   Button,
-  Select,
-  MenuItem,
+  Grid,
+  Typography,
   FormControl,
   InputLabel,
-  Box,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  Card,
+  CardContent,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 
 const AddRoom = () => {
-  const [roomDetails, setRoomDetails] = useState({
+  const { id } = useParams();
+  const [room, setRoom] = useState({
     name: '',
     maxCount: '',
-    phoneNumber: '',
     rentPerDay: '',
-    imageUrl1: '',
-    imageUrl2: '',
-    imageUrl3: '',
+    imageUrls: [], 
+    phoneNumber: '',
     type: '',
     description: '',
+    amenities: [],
   });
+  const [allAmenities, setAllAmenities] = useState([]); 
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setRoomDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
-  };
+  // Fetch all available amenities
+  useEffect(() => {
+    const fetchAmenities = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/amenities');
+        setAllAmenities(response.data);
+      } catch (error) {
+        console.error("Error fetching amenities:", error);
+      }
+    };
+    fetchAmenities();
+  }, []);
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/rooms/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(roomDetails),
-      });
+  // Fetch room data if editing an existing room
+  useEffect(() => {
+    const fetchRoom = async () => {
+      if (id) {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/rooms/${id}`);
+          setRoom(response.data);
+        } catch (error) {
+          console.error("Error fetching room:", error);
+        }
+      }
+    };
+    fetchRoom();
+  }, [id]);
 
-      const data = await response.json();
-      console.log(data);
-
-      setRoomDetails({
-        name: '',
-        maxCount: '',
-        phoneNumber: '',
-        rentPerDay: '',
-        imageUrl1: '',
-        imageUrl2: '',
-        imageUrl3: '',
-        type: '',
-        description: '',
-      });
-
-      Swal.fire('Congrats', 'New room added successfully.','success').then(result=>{
-        window.location.reload();
-      })
-
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      Swal.fire('Oops', 'Something went wrong.', 'error');
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setRoom((prev) => ({
+        ...prev,
+        amenities: checked
+          ? [...prev.amenities, value]
+          : prev.amenities.filter((amenity) => amenity !== value),
+      }));
+    } else if (name === 'imageUrls') {
+      // Process multiple image URLs
+      setRoom((prev) => ({
+        ...prev,
+        imageUrls: value.split(',').map((url) => url.trim()),
+      }));
+    } else {
+      setRoom((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
+  // Submit form for adding or updating a room
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (id) {
+        // Update an existing room
+        await axios.put(`http://localhost:5000/api/rooms/${id}`, room);
+        setSnackbarMessage('Room updated successfully!');
+      } else {
+        // Add a new room
+        await axios.post('http://localhost:5000/api/rooms', room);
+        setSnackbarMessage('Room added successfully!');
+      }
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+      navigate('/admin');
+    } catch (error) {
+      console.error("Error processing room:", error.response?.data?.message || error.message);
+      setSnackbarMessage(error.response?.data?.message || 'Error processing room');
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
+  };
+
   return (
-    <Box
-      sx={{
-        margin: '3px 20%',
-        '& .MuiFormControl-root': {
-          margin: '8px 0',
-        },
-        '& .MuiButton-root': {
-          marginTop: '16px',
-        },
-      }}
-    >
-      <TextField
-        label="Name"
-        name="name"
-        value={roomDetails.name}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Max Count"
-        name="maxCount"
-        value={roomDetails.maxCount}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-        type="number"
-      />
-      <TextField
-        label="Phone Number"
-        name="phoneNumber"
-        value={roomDetails.phoneNumber}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Rent Per Day"
-        name="rentPerDay"
-        value={roomDetails.rentPerDay}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-        type="number"
-      />
-      <TextField
-        label="Image URL 1"
-        name="imageUrl1"
-        value={roomDetails.imageUrl1}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Image URL 2"
-        name="imageUrl2"
-        value={roomDetails.imageUrl2}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Image URL 3"
-        name="imageUrl3"
-        value={roomDetails.imageUrl3}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-      />
-      <FormControl fullWidth>
-        <InputLabel>Type</InputLabel>
-        <Select name="type" value={roomDetails.type} onChange={handleChange}>
-          <MenuItem value="Deluxe">Deluxe</MenuItem>
-          <MenuItem value="Non-deluxe">Non-deluxe</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        label="Description"
-        name="description"
-        value={roomDetails.description}
-        onChange={handleChange}
-        fullWidth
-        margin="normal"
-        multiline
-        rows={4}
-      />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Add Room
-      </Button>
-    </Box>
+    <Card>
+      <CardContent>
+        <Typography variant="h5" component="div">{id ? 'Edit Room' : 'Add New Room'}</Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Room Name"
+                name="name"
+                fullWidth
+                value={room.name}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <InputLabel>Room Type</InputLabel>
+                <Select
+                  name="type"
+                  value={room.type}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="Deluxe">Deluxe</MenuItem>
+                  <MenuItem value="Standard">Standard</MenuItem>
+                  <MenuItem value="Suite">Suite</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                name="description"
+                fullWidth
+                multiline
+                rows={4}
+                value={room.description}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Phone Number"
+                name="phoneNumber"
+                type="tel"
+                fullWidth
+                value={room.phoneNumber}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Max Count"
+                name="maxCount"
+                type="number"
+                fullWidth
+                value={room.maxCount}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label="Rent Per Day"
+                name="rentPerDay"
+                type="number"
+                fullWidth
+                value={room.rentPerDay}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Image URLs (comma-separated)"
+                name="imageUrls"
+                fullWidth
+                value={room.imageUrls.join(', ')}
+                onChange={handleChange}
+                helperText="Separate multiple URLs with commas"
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1">Amenities</Typography>
+              {allAmenities.map((amenity) => (
+                <FormControlLabel
+                  key={amenity}
+                  control={
+                    <Checkbox
+                      checked={room.amenities.includes(amenity)}
+                      onChange={handleChange}
+                      name="amenities"
+                      value={amenity}
+                    />
+                  }
+                  label={amenity}
+                />
+              ))}
+            </Grid>
+          </Grid>
+          <Button type="submit" variant="contained" color="primary">{id ? 'Save Changes' : 'Add Room'}</Button>
+        </form>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </CardContent>
+    </Card>
   );
 };
 

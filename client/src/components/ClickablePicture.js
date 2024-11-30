@@ -30,10 +30,9 @@ const ClickablePicture = ({ imageUrl, title, sentence1, onClick }) => {
         <Typography variant="h6" align="center">
           {title}
         </Typography>
-        <Typography variant="body2" align="center">
+        <Typography variant="body2" align="center" style={{ whiteSpace: 'pre-line' }}>
           {sentence1}
         </Typography>
-        
       </CardContent>
     </Card>
   );
