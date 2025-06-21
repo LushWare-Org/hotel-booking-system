@@ -11,11 +11,9 @@ const contactRoutes = require('./routes/contactRoutes');
 const bookRoutes = require('./routes/bookingRoutes');
 
 const app = express();
+app.use(cors({ origin: 'http://localhost:5173', credentials: true })); 
 app.use(bodyParser.json());
 app.use('/api/contact', contactRoutes);
-
-// Use CORS for cross-origin requests
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // Middleware to parse JSON data
 app.use(express.json());

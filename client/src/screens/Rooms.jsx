@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Dialog, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { Carousel } from 'react-responsive-carousel';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 import dayjs from 'dayjs';
@@ -10,7 +13,6 @@ import {
 } from 'lucide-react';
 import BookingCalendar from './Bookingcalender';
 import RoomSearch from './RoomSearch';
-import DateRange from '../components/DateRange';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const Rooms = () => {
@@ -30,30 +32,20 @@ const Rooms = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-    const handleDateRangeSelect = (from, to) => {
-      setFromDate(from);
-      setToDate(to);
-    };
-
-      const  handleDateRangeChange = (dates) => {
-    setFromDate(dates[0]);
-    setToDate(dates[1]);
-  };
-
   // Facility icons 
   const facilityIcons = {
-    "Free Wi-Fi": <Wifi className="text-blue-500" />,
-    "Minibar": <Coffee className="text-amber-700" />,
-    "Shower WC": <ShowerHead className="text-blue-400" />,
-    "Bathrobe": <Shirt className="text-gray-500" />,
-    "In-room Digital Safe": <Lock className="text-gray-700" />,
-    "Iron and Iron Board": <Shirt className="text-gray-500" />,
-    "Ocean View": <Map className="text-indigo-500" />,
-    "Private Pool": <Droplet className="text-cyan-500" />,
-    "Air Conditioning": <Wind className="text-blue-300" />,
-    "Flat Screen TV": <Tv className="text-gray-600" />,
-    "Spa Access": <Star className="text-pink-500" />,
-    "Gym Access": <Dumbbell className="text-yellow-600" />
+    "Free Wi-Fi": <Wifi className="text-blue-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Minibar": <Coffee className="text-amber-700 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Shower WC": <ShowerHead className="text-blue-400 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Bathrobe": <Shirt className="text-gray-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "In-room Digital Safe": <Lock className="text-gray-700 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Iron and Iron Board": <Shirt className="text-gray-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Ocean View": <Map className="text-indigo-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Private Pool": <Droplet className="text-cyan-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Air Conditioning": <Wind className="text-blue-300 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Flat Screen TV": <Tv className="text-gray-600 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Spa Access": <Star className="text-pink-500 h-5 w-5 sm:h-6 sm:w-6" />,
+    "Gym Access": <Dumbbell className="text-yellow-600 h-5 w-5 sm:h-6 sm:w-6" />
   };
 
   const baseRoomCategories = [
@@ -78,8 +70,9 @@ const Rooms = () => {
       const stateToDate = location.state.toDate;
       const stateSearchTerm = location.state.searchTerm;
 
-      const newFromDate = stateFromDate ? new Date(stateFromDate) : null;
-      const newToDate = stateToDate ? new Date(stateToDate) : null;
+      // Always convert to dayjs for date pickers
+      const newFromDate = stateFromDate ? dayjs(stateFromDate) : null;
+      const newToDate = stateToDate ? dayjs(stateToDate) : null;
       const newSearchTerm = stateSearchTerm || '';
 
       console.log('Initializing search data from location.state:', { newFromDate, newToDate, newSearchTerm });
@@ -104,6 +97,11 @@ const Rooms = () => {
       setRoomCategories(baseRoomCategories);
     }
   }, [location.key]);
+
+  const handleDateRangeSelect = (from, to) => {
+    setFromDate(from ? dayjs(from) : null);
+    setToDate(to ? dayjs(to) : null);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -215,17 +213,20 @@ const Rooms = () => {
     setOpenDialog(false);
   };
 
+  // In the DialogActions Book Now button, ensure fromDate and toDate are dayjs objects and not null before proceeding
   const handleOpenPaymentDialog = () => {
     console.log('Opening payment dialog for:', selectedRoom);
-    if (selectedRoom) {
-      localStorage.setItem('fromDate', dayjs(fromDate).format('YYYY-MM-DD'));
-      localStorage.setItem('toDate', dayjs(toDate).format('YYYY-MM-DD'));
+    if (selectedRoom && fromDate && toDate && dayjs.isDayjs(fromDate) && dayjs.isDayjs(toDate)) {
+      localStorage.setItem('fromDate', fromDate.format('YYYY-MM-DD'));
+      localStorage.setItem('toDate', toDate.format('YYYY-MM-DD'));
       navigate(`/rooms/payment/${selectedRoom._id}`, {
         state: {
-          fromDate,
-          toDate,
+          fromDate: fromDate.toDate(),
+          toDate: toDate.toDate(),
         },
       });
+    } else {
+      alert('Please select check-in and check-out dates before booking.');
     }
   };
 
@@ -300,7 +301,7 @@ const Rooms = () => {
               </h1>
               <div className="h-1 w-24 bg-blue-400 mx-auto"></div>
             </div>
-            <p className="text-xl md:text-2xl mb-8  max-w-2xl mx-auto opacity-90 leading-relaxed">
+            <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto opacity-90 leading-relaxed">
               Experience unparalleled comfort and elegance in our meticulously designed sanctuaries of relaxation
             </p>
           </div>
@@ -308,22 +309,20 @@ const Rooms = () => {
       </div>
 
       {/* Search Components */}
-      <div className="relative z-20 max-w-6xl mx-auto -mt-60">
-        <div className="bg rounded-xl text-white shadow-xl p-6 transition-all duration-300  w-fit mx-auto">
-          <div className="flex flex-col md:flex-row gap-4">
-            <BookingCalendar
-              fromDate={fromDate}
-              setFromDate={setFromDate}
-              toDate={toDate}
-              setToDate={setToDate}
-              searchTerm={calendarSearchTerm}
-              setSearchTerm={setCalendarSearchTerm}
-              onSearch={() => setActiveTab('available')}
-              resetSearch={resetSearch}
-            />
-          </div>
-        </div><br />
-
+      <div className="relative z-20 max-w-4xl mx-auto -mt-64 sm:-mt-60 px-4 sm:px-0">
+        <div className="bg-transparent rounded-xl text-white shadow-xl p-4 sm:p-6 transition-all duration-300">
+          <BookingCalendar
+            fromDate={fromDate}
+            setFromDate={setFromDate}
+            toDate={toDate}
+            setToDate={setToDate}
+            searchTerm={calendarSearchTerm}
+            setSearchTerm={setCalendarSearchTerm}
+            onSearch={() => setActiveTab('available')}
+            resetSearch={resetSearch}
+            onDateRangeSelect={handleDateRangeSelect}
+          />
+        </div>
         <RoomSearch
           setFilteredRooms={setSearchFilteredRooms}
           rooms={rooms}
@@ -343,12 +342,12 @@ const Rooms = () => {
             </h2>
           </div>
           {filteredRooms.length > 0 ? (
-            <Typography variant="h6" className="text-gray-600 mt-2">
+            <Typography variant="h6" className="text-gray-600 mt-2 text-sm sm:text-base">
               {filteredRooms.length} {filteredRooms.length === 1 ? 'room' : 'rooms'} {activeTab === 'available' ? 'available' : 'found'}
               {activeTab === 'available' && fromDate && toDate ? ` for ${dayjs(fromDate).format('MMM D, YYYY')} to ${dayjs(toDate).format('MMM D, YYYY')}` : ''}
             </Typography>
           ) : (
-            <Typography variant="h6" className="text-gray-600 mt-2">
+            <Typography variant="h6" className="text-gray-600 mt-2 text-sm sm:text-base">
               No rooms {activeTab === 'available' ? 'available' : 'found'}
               {activeTab === 'available' && fromDate && toDate ? ` for ${dayjs(fromDate).format('MMM D, YYYY')} to ${dayjs(toDate).format('MMM D, YYYY')}` : ''}
             </Typography>
@@ -362,7 +361,7 @@ const Rooms = () => {
               <button
                 key={category.id}
                 onClick={() => filterByCategory(category.id)}
-                className={`py-2 px-6 rounded-full whitespace-nowrap transition-all duration-300 ${
+                className={`py-2 px-6 rounded-full whitespace-nowrap transition-all duration-300 text-sm sm:text-base ${
                   activeTab === category.id 
                     ? 'bg-blue-600 text-white shadow-md' 
                     : 'bg-transparent text-gray-700 hover:bg-blue-100'
@@ -380,6 +379,7 @@ const Rooms = () => {
             filteredRooms.map((room) => (
               <Grid item key={room._id} xs={12} sm={6} md={4}>
                 <div
+                  className="room-card max-w-[90vw] mx-auto"
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -416,6 +416,7 @@ const Rooms = () => {
                     showStatus={false}
                     showIndicators={true}
                     style={{ width: '100%', height: '38%' }}
+                    className="room-carousel"
                   >
                     {room.imageUrls && Array.isArray(room.imageUrls) && room.imageUrls.length > 0 ? (
                       room.imageUrls.map((image, index) => (
@@ -428,13 +429,14 @@ const Rooms = () => {
                               height: '30vh',
                               objectFit: 'cover',
                             }}
+                            className="room-image"
                             onError={(e) => (e.target.src = 'https://via.placeholder.com/800x500')}
                           />
                         </div>
                       ))
                     ) : (
-                      <div style={{ textAlign: 'center', padding: '10px', height: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0' }}>
-                        <p>No images available</p>
+                      <div className="flex items-center justify-center w-full h-48 sm:h-[30vh] bg-gray-100">
+                        <p className="text-gray-500 text-sm">No images available</p>
                       </div>
                     )}
                   </Carousel>
@@ -449,10 +451,11 @@ const Rooms = () => {
                       width: 'fit-content',
                       padding: '4px 8px',
                     }}
+                    className="room-type"
                   >
                     {room.type || 'Unknown'}
                   </p>
-                  <div style={{ height: '55%', padding: '1vh 1vw' }}>
+                  <div style={{ height: '55%', padding: '1vh 1vw' }} className="room-content">
                     <h3
                       style={{
                         margin: '0px 0vw 1vh 0vw',
@@ -460,6 +463,7 @@ const Rooms = () => {
                         fontWeight: 'bold',
                         color: '#333',
                       }}
+                      className="room-name"
                     >
                       {room.name || 'Unnamed Room'}
                     </h3>
@@ -470,6 +474,7 @@ const Rooms = () => {
                         fontSize: '0.9rem',
                         color: '#555',
                       }}
+                      className="room-description"
                     >
                       {room.description || 'No description available'}
                     </p>
@@ -484,6 +489,7 @@ const Rooms = () => {
                         width: '100%',
                         height: '30%',
                       }}
+                      className="room-facilities"
                     >
                       {room.facilities && Array.isArray(room.facilities) && room.facilities.length > 0 ? (
                         room.facilities.map((facility, index) => (
@@ -498,29 +504,35 @@ const Rooms = () => {
                               maxWidth: '6vw',
                               flexShrink: 0,
                             }}
+                            className="facility-item"
                           >
-                            {facilityIcons[facility] || <Shirt className="text-gray-500" />}
-                            <span style={{ fontSize: '0.8rem', marginTop: '4px', textAlign: 'center' }}>
+                            {facilityIcons[facility] || <Shirt className="text-gray-500 h-5 w-5 sm:h-6 sm:w-6" />}
+                            <span style={{ fontSize: '0.8rem', marginTop: '4px', textAlign: 'center' }} className="facility-text">
                               {facility}
                             </span>
                           </div>
                         ))
                       ) : (
-                        <span style={{ fontSize: '0.8rem', color: '#555' }}>No facilities listed</span>
+                        <span style={{ fontSize: '0.8rem', color: '#555' }} className="no-facilities">
+                          No facilities listed
+                        </span>
                       )}
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'left', marginTop: '1vh' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'left', marginTop: '1vh' }} className="room-footer">
                       <div>
-                        <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)', marginBottom: '0' }}>Starting From</p>
+                        <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)', marginBottom: '0' }} className="price-label">
+                          Starting From
+                        </p>
                         <p
                           style={{
                             fontSize: '30px',
                             fontWeight: 'bold',
                             color: 'black',
                           }}
+                          className="room-price"
                         >
                           ${room.rentPerDay || 'N/A'}
-                          <span style={{ fontSize: '20px', color: 'rgba(0,0,0,0.5)' }}>/night</span>
+                          <span style={{ fontSize: '20px', color: 'rgba(0,0,0,0.5)' }} className="price-unit">/night</span>
                         </p>
                       </div>
                       <button
@@ -534,6 +546,7 @@ const Rooms = () => {
                           border: 'none',
                           cursor: 'pointer',
                         }}
+                        className="book-now"
                       >
                         Book Now
                       </button>
@@ -543,13 +556,13 @@ const Rooms = () => {
               </Grid>
             ))
           ) : (
-            <div style={{ width: '100%', textAlign: 'center', padding: '40px 0' }}>
-              <div style={{ backgroundColor: '#eff6ff', borderRadius: '8px', padding: '32px', maxWidth: '400px', margin: '0 auto' }}>
-                <Search style={{ margin: '0 auto 16px', color: '#3b82f6', width: '48px', height: '48px' }} />
-                <h3 style={{ fontSize: '20px', fontWeight: '500', color: '#1f2937', marginBottom: '8px' }}>
+            <div className="w-full text-center py-10">
+              <div className="bg-blue-50 rounded-lg p-8 max-w-md mx-auto">
+                <Search className="mx-auto mb-4 text-blue-500 h-12 w-12" />
+                <h3 className="text-lg sm:text-xl font-medium text-gray-800 mb-2">
                   No rooms {activeTab === 'available' ? 'available' : 'found'}
                 </h3>
-                <p style={{ color: '#4b5563' }}>
+                <p className="text-sm sm:text-base text-gray-600">
                   {activeTab === 'available' && fromDate && toDate
                     ? `No rooms available for ${dayjs(fromDate).format('MMM D, YYYY')} to ${dayjs(toDate).format('MMM D, YYYY')}`
                     : `No rooms ${activeTab === 'available' ? 'available' : 'found'} for the selected category.`}
@@ -571,213 +584,360 @@ const Rooms = () => {
           style: {
             minHeight: '79vh',
             borderRadius: '10px',
+            maxWidth: '900px', // Desktop max width
           },
         }}
       >
         {selectedRoom && (
-          <>
-            <div style={{ position: 'relative', width: '100%' }}>
-              <Carousel
-                showThumbs={false}
-                infiniteLoop
-                useKeyboardArrows
-                autoPlay
-                renderArrowPrev={(onClickHandler, hasPrev) =>
-                  hasPrev && (
-                    <div
-                      onClick={onClickHandler}
-                      style={{
-                        position: 'absolute',
-                        left: '10px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'pointer',
-                        zIndex: 10,
-                      }}
-                    >
-                      <KeyboardArrowLeft style={{ fontSize: '40px', color: '#fff' }} />
-                    </div>
-                  )
-                }
-                renderArrowNext={(onClickHandler, hasNext) =>
-                  hasNext && (
-                    <div
-                      onClick={onClickHandler}
-                      style={{
-                        position: 'absolute',
-                        right: '10px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        cursor: 'pointer',
-                        zIndex: 10,
-                      }}
-                    >
-                      <KeyboardArrowRight style={{ fontSize: '40px', color: '#fff' }} />
-                    </div>
-                  )
-                }
-              >
-                {selectedRoom.imageUrls && Array.isArray(selectedRoom.imageUrls) && selectedRoom.imageUrls.length > 0 ? (
-                  selectedRoom.imageUrls.map((url, index) => (
-                    <div key={index}>
-                      <img
-                        src={url}
-                        alt={`${selectedRoom.name || 'Room'}`}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className="room-detail-modal">
+              <div style={{ position: 'relative', width: '100%' }}>
+                <Carousel
+                  showThumbs={false}
+                  infiniteLoop
+                  useKeyboardArrows
+                  autoPlay
+                  renderArrowPrev={(onClickHandler, hasPrev) =>
+                    hasPrev && (
+                      <div
+                        onClick={onClickHandler}
                         style={{
-                          width: '100%',
-                          height: '350px',
-                          objectFit: 'cover',
+                          position: 'absolute',
+                          left: '10px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          cursor: 'pointer',
+                          zIndex: 10,
                         }}
-                        onError={(e) => (e.target.src = 'https://via.placeholder.com/800x500')}
-                      />
+                      >
+                        <KeyboardArrowLeft style={{ fontSize: '40px', color: '#fff' }} />
+                      </div>
+                    )
+                  }
+                  renderArrowNext={(onClickHandler, hasNext) =>
+                    hasNext && (
+                      <div
+                        onClick={onClickHandler}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          cursor: 'pointer',
+                          zIndex: 10,
+                        }}
+                      >
+                        <KeyboardArrowRight style={{ fontSize: '40px', color: '#fff' }} />
+                      </div>
+                    )
+                  }
+                >
+                  {selectedRoom.imageUrls && Array.isArray(selectedRoom.imageUrls) && selectedRoom.imageUrls.length > 0 ? (
+                    selectedRoom.imageUrls.map((url, index) => (
+                      <div key={index}>
+                        <img
+                          src={url}
+                          alt={`${selectedRoom.name || 'Room'}`}
+                          style={{
+                            width: '100%',
+                            height: '350px',
+                            objectFit: 'cover',
+                          }}
+                          onError={(e) => (e.target.src = 'https://via.placeholder.com/800x500')}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ width: '100%', height: '350px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <p>No images available</p>
                     </div>
-                  ))
-                ) : (
-                  <div style={{ width: '100%', height: '350px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <p>No images available</p>
-                  </div>
-                )}
-              </Carousel>
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: '0',
-                  width: '100%',
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                  padding: '10px 20px',
-                  zIndex: 5,
-                  textAlign: 'center',
-                }}
-              >
-                <Typography
+                  )}
+                </Carousel>
+                <div
                   style={{
-                    fontFamily: 'Playfair Display, serif',
-                    color: '#fff',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
+                    position: 'absolute',
+                    bottom: '0',
+                    width: '100%',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: '10px 20px',
+                    zIndex: 5,
                     textAlign: 'center',
                   }}
                 >
-                  {selectedRoom.name || 'Unnamed Room'}
-                </Typography>
-              </div>
-            </div>
-            <br />
-            <DialogContent style={{ padding: '0 20px' }}>
-              <Typography
-                variant="body1"
-                style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', marginBottom: '20px', textAlign: 'center' }}
-              >
-                {selectedRoom.description || 'No description available'}
-              </Typography>
-              <Box display="flex" justifyContent="space-between" mt={2} style={{ padding: '0 1vw' }}>
-                <Typography
-                  variant="body1"
-                  style={{
-                    fontFamily: 'Playfair Display, serif',
-                    color: '#2b2a78',
-                    marginBottom: '10px',
-                    backgroundColor: 'rgba(0,0,50,0.2)',
-                    padding: '5px 10px',
-                  }}
-                >
-                  {selectedRoom.type || 'Unknown'}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
-                >
-                  Max Count: {selectedRoom.maxCount || 'N/A'}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', display: 'flex', alignItems: 'center' }}
-                >
-                  <Phone className="mr-2 text-[#2b2a78]" size={20} />
-                  {selectedRoom.phoneNumber || 'Contact available'}
-                </Typography>
-                <Typography
-                  variant="body1"
-                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
-                >
-                  <span style={{ fontWeight: 'bold', fontSize: '25px' }}>${selectedRoom.rentPerDay || 'N/A'}</span>/night
-                </Typography>
-              </Box>
-              <Box
-                display="flex"
-                flexWrap="wrap"
-                gap={2}
-                alignItems="center"
-                style={{
-                  padding: '10px',
-                  backgroundColor: '#f9f9f9',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  margin: '0 1vw 1vh 1vw',
-                }}
-              >
-                {Array.isArray(selectedRoom.facilities) && selectedRoom.facilities.length > 0 ? (
-                  selectedRoom.facilities.map((facility, index) => (
-                    <Box key={index} display="flex" alignItems="center" style={{ margin: '5px 10px' }}>
-                      {facilityIcons[facility] || <Shirt className="text-gray-500" />}
-                      <Typography
-                        variant="body2"
-                        style={{
-                          marginLeft: '8px',
-                          fontWeight: 'bold',
-                          fontFamily: 'Playfair Display, serif',
-                          color: '#6B4F4F',
-                        }}
-                      >
-                        {facility}
-                      </Typography>
-                    </Box>
-                  ))
-                ) : (
                   <Typography
-                    variant="body2"
                     style={{
                       fontFamily: 'Playfair Display, serif',
-                      color: '#6B4F4F',
+                      color: '#fff',
+                      fontSize: '20px',
+                      fontWeight: 'bold',
+                      textAlign: 'center',
                     }}
                   >
-                    No facilities listed
+                    {selectedRoom.name || 'Unnamed Room'}
                   </Typography>
-                )}
-              </Box>
-              <BookingCalendar onDateRangeSelect={handleDateRangeSelect} />
-            </DialogContent>
-            <DialogActions style={{ display: 'flex', justifyContent: 'space-between', padding: '1vh 2vw 4vh 2vw' }}>
-              <Button
-                onClick={handleCloseDialog}
-                style={{
-                  border: '1px solid red',
-                  color: '#633434',
-                  padding: '5px 10px',
-                  borderRadius: '8px',
-                }}
-              >
-                Close
-              </Button>
-              <Button
-                style={{
-                  backgroundColor: '#1E3A8A',
-                  color: '#fff',
-                  padding: '5px 10px',
-                  fontSize: '16px',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                }}
-                onClick={handleOpenPaymentDialog}
-              >
-                Book Now
-              </Button>
-            </DialogActions>
-          </>
+                </div>
+              </div>
+              <DialogContent style={{ padding: '20px' }}>
+                <Typography
+                  variant="body1"
+                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', marginBottom: '20px', textAlign: 'center' }}
+                >
+                  {selectedRoom.description || 'No description available'}
+                </Typography>
+                <Box display="flex" justifyContent="space-between" mt={2} style={{ padding: '0 1vw' }}>
+                  <Typography
+                    variant="body1"
+                    style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
+                  >
+                    Max Count: {selectedRoom.maxCount || 'N/A'}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', display: 'flex', alignItems: 'center' }}
+                  >
+                    <Phone className="mr-2 text-[#2b2a78]" size={20} />
+                    {selectedRoom.phoneNumber || 'Contact available'}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
+                  >
+                    <span style={{ fontWeight: 'bold', fontSize: '25px' }}>${selectedRoom.rentPerDay || 'N/A'}</span>/night
+                  </Typography>
+                </Box>
+                <Box
+                  display="flex"
+                  flexWrap="wrap"
+                  gap={2}
+                  alignItems="center"
+                  style={{
+                    padding: '10px',
+                    backgroundColor: '#f9f9f9',
+                    border: '1px solid #ccc',
+                    borderRadius: '8px',
+                    margin: '0 1vw 1vh 1vw',
+                  }}
+                >
+                  {Array.isArray(selectedRoom.facilities) && selectedRoom.facilities.length > 0 ? (
+                    selectedRoom.facilities.map((facility, index) => (
+                      <Box key={index} display="flex" alignItems="center" style={{ margin: '5px 10px' }}>
+                        {facilityIcons[facility] || <Shirt className="text-gray-500 h-5 w-5" />}
+                        <Typography
+                          variant="body2"
+                          style={{
+                            marginLeft: '8px',
+                            fontWeight: 'bold',
+                            fontFamily: 'Playfair Display, serif',
+                            color: '#6B4F4F',
+                          }}
+                        >
+                          {facility}
+                        </Typography>
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      style={{
+                        fontFamily: 'Playfair Display, serif',
+                        color: '#6B4F4F',
+                      }}
+                    >
+                      No facilities listed
+                    </Typography>
+                  )}
+                </Box>
+              </DialogContent>
+              <DialogActions style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', padding: '20px' }}>
+                <Box display="flex" flexDirection="row" gap={2} mb={2} sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+                  <DatePicker
+                    label="Check-in Date"
+                    value={fromDate}
+                    onChange={(newValue) => setFromDate(newValue)}
+                    minDate={dayjs()}
+                    slotProps={{
+                      textField: { size: 'small', fullWidth: true },
+                    }}
+                    sx={{ flex: 1 }}
+                  />
+                  <DatePicker
+                    label="Check-out Date"
+                    value={toDate}
+                    onChange={(newValue) => setToDate(newValue)}
+                    minDate={fromDate ? dayjs(fromDate).add(1, 'day') : dayjs()}
+                    slotProps={{
+                      textField: { size: 'small', fullWidth: true },
+                    }}
+                    sx={{ flex: 1 }}
+                  />
+                </Box>
+                <Box display="flex" justifyContent="space-between" sx={{ flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 2, sm: 0 } }}>
+                  <Button
+                    onClick={handleCloseDialog}
+                    style={{
+                      border: '1px solid red',
+                      color: '#633434',
+                      padding: '5px 10px',
+                      borderRadius: '8px',
+                      flex: 1,
+                      margin: '0 5px',
+                    }}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    style={{
+                      backgroundColor: '#1E3A8A',
+                      color: '#fff',
+                      padding: '5px 10px',
+                      fontSize: '16px',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                      flex: 1,
+                      margin: '0 5px',
+                    }}
+                    onClick={handleOpenPaymentDialog}
+                  >
+                    Book Now
+                  </Button>
+                </Box>
+              </DialogActions>
+            </div>
+          </LocalizationProvider>
         )}
-      </Dialog><br/><br/><br/>
+      </Dialog><br/><br/>
 
-    
+      <style jsx>{`
+        .room-detail-modal {
+          /* Desktop styles remain unchanged */
+        }
+
+        @media (max-width: 600px) {
+          .room-detail-modal {
+            padding: 10px;
+          }
+
+          .room-detail-modal .carousel {
+            height: 200px !important;
+          }
+
+          .room-detail-modal .carousel img {
+            height: 200px !important;
+            object-fit: cover;
+          }
+
+          .room-detail-modal .MuiTypography-body1 {
+            font-size: 0.9rem !important;
+            line-height: 1.4;
+            margin-bottom: 12px !important;
+          }
+
+          .room-detail-modal .MuiBox-root {
+            padding: 8px !important;
+            margin: 0 0.5vw 0.5vh 0.5vw !important;
+          }
+
+          .room-detail-modal .MuiBox-root .MuiTypography-body2 {
+            font-size: 0.8rem !important;
+          }
+
+          .room-detail-modal .MuiDialogContent-root {
+            padding: 10px !important;
+          }
+
+          .room-detail-modal .MuiDialogActions-root {
+            padding: 10px !important;
+          }
+
+          .room-detail-modal .MuiButton-root {
+            font-size: 0.85rem !important;
+            padding: 8px 16px !important;
+            margin: 5px 0 !important;
+          }
+
+          .room-detail-modal .MuiSvgIcon-root {
+            font-size: 30px !important;
+          }
+
+          .room-detail-modal .MuiTypography-root[style*="font-size: 20px"] {
+            font-size: 16px !important;
+          }
+
+          .room-detail-modal .MuiTypography-root[style*="font-size: 25px"] {
+            font-size: 20px !important;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .room-card {
+            max-width: 90vw;
+            margin: 0 auto;
+            padding-bottom: 16px;
+          }
+          .room-carousel .room-image {
+            height: 192px !important;
+          }
+          .room-type {
+            font-size: 0.75rem !important;
+            padding: 4px 8px !important;
+            top: -180px !important;
+            left: 8px !important;
+          }
+          .room-content {
+            padding: 16px !important;
+            height: auto !important;
+          }
+          .room-name {
+            font-size: 1.125rem !important;
+          }
+          .room-description {
+            font-size: 0.875rem !important;
+            line-height: 1.25rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+          .room-facilities {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+            overflow-x: visible !important;
+            height: auto !important;
+          }
+          .facility-item {
+            min-width: auto !important;
+            max-width: none !important;
+          }
+          .facility-text {
+            font-size: 0.875rem !important;
+            text-align: center;
+          }
+          .no-facilities {
+            font-size: 0.875rem !important;
+            grid-column: span 2 !important;
+          }
+          .room-footer {
+            align-items: center !important;
+            margin-top: 16px !important;
+          }
+          .price-label {
+            font-size: 0.75rem !important;
+          }
+          .room-price {
+            font-size: 1.5rem !important;
+          }
+          .price-unit {
+            font-size: 1rem !important;
+          }
+          .book-now {
+            padding: 8px 16px !important;
+            font-size: 0.875rem !important;
+            height: auto !important;
+            line-height: 1.25rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };

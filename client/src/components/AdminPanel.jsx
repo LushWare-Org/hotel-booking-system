@@ -7,7 +7,6 @@ import Users from '../components/Users';
 import NotificationForm from '../components/NotificationForm';
 import ManageNotifications from '../components/ManageNotifications';
 import ContactInquiries from '../components/ContactInquiries';
-import Footer from '../screens/Footer';
 
 const { TabPane } = Tabs;
 
@@ -20,6 +19,29 @@ const AdminPanel = () => {
 
   return (
     <div>
+      {/* Hero Section */}
+      <div
+        style={{
+          background: '#1a237e',
+          height: '38vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+        }}
+      >
+        <h1
+          style={{
+            fontSize: '4rem',
+            fontWeight: '600',
+            margin: '0',
+            fontFamily: 'Arial, sans-serif',
+          }}
+        >
+          Admin Panel
+        </h1>
+      </div>
+
       <div
       style={{
         display: 'flex',
@@ -28,6 +50,7 @@ const AdminPanel = () => {
         width: '100vw',
         background: 'linear-gradient(to bottom, #f0f2f5, #dfe7ec)',
         fontFamily: 'Arial, sans-serif',
+        marginTop: '40px',
       }}
     >
       <div
@@ -90,11 +113,9 @@ const AdminPanel = () => {
             </div>
           </TabPane>
         </Tabs>
+        </div>
       </div>
     </div>
-      <Footer />
-    </div>
-    
   );
 };
 

@@ -20,20 +20,34 @@ export default function MaldivesContactPage() {
     }));
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-        inquiryType: 'general'
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await fetch('http://localhost:8000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message
+        }),
       });
-    }, 3000);
+      setIsSubmitted(true);
+      // Reset form after 3 seconds
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
+          inquiryType: 'general'
+        });
+      }, 3000);
+    } catch (error) {
+      alert('Failed to send inquiry. Please try again.');
+    }
   };
 
   const scrollToSection = (sectionId) => {
@@ -177,7 +191,7 @@ export default function MaldivesContactPage() {
                   <p className="text-green-600">Thank you for contacting us. We'll respond to your inquiry shortly.</p>
                 </div>
               ) : (
-                <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Name *</label>
@@ -259,13 +273,13 @@ export default function MaldivesContactPage() {
                   </div>
 
                   <button
-                    onClick={handleSubmit}
+                    type="submit"
                     className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center"
                   >
                     <Send className="mr-2 h-5 w-5" />
                     Send Message
                   </button>
-                </div>
+                </form>
               )}
             </div>
 

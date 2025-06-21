@@ -48,57 +48,54 @@ const ModernFaqAccordion = () => {
         </svg>
       </div>
 
-      <div className="container mx-auto px-4 md:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mb-6">
-            <MessageCircle className="h-8 w-8 text-white" />
+      <div className="container mx-auto px-2 sm:px-4 md:px-8 relative z-10">
+        <div className="text-center mb-10 sm:mb-16">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mb-4 sm:mb-6">
+            <MessageCircle className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             Frequently Asked Questions
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Everything you need to know before experiencing paradise at Azure Haven
           </p>
         </div>
         
-        <div className="max-w-4xl mx-auto">
-          <div className="grid gap-4">
+        <div className="max-w-full sm:max-w-4xl mx-auto">
+          <div className="grid gap-3 sm:gap-4">
             {faqData.map((faq, index) => (
               <div 
                 key={index} 
-                className={`group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100
-                  ${openIndex === index ? 'shadow-2xl ring-2 ring-blue-500/20 transform scale-[1.02]' : 'hover:transform hover:scale-[1.01]'}`}
+                className={`group bg-white rounded-xl sm:rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-100
+                  ${openIndex === index ? 'shadow-2xl ring-2 ring-blue-500/20 transform scale-[1.01] sm:scale-[1.02]' : 'hover:transform hover:scale-[1.01]'}`}
               >
                 <button
-                  className="flex justify-between items-center w-full text-left p-6 md:p-8 focus:outline-none"
+                  className="flex flex-wrap sm:flex-nowrap justify-between items-center w-full text-left p-4 sm:p-6 md:p-8 focus:outline-none"
                   onClick={() => toggleAccordion(index)}
                 >
-                  <div className="flex items-center space-x-4 flex-1">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-1">
-                      </div>
-                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                  <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 sm:space-x-3 mb-1"></div>
+                      <h3 className="text-base sm:text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors duration-300 truncate">
                         {faq.question}
                       </h3>
                     </div>
                   </div>
-                  
-                  <div className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ml-4
+                  <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all duration-300 ml-2 sm:ml-4
                     ${openIndex === index 
                       ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white rotate-45' 
                       : 'bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-600'}`}>
-                    <Plus className="h-5 w-5" />
+                    <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
                 </button>
-                
                 <div 
                   className={`transition-all duration-500 ease-in-out overflow-hidden
                     ${openIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
                 >
-                  <div className="px-6 md:px-8 pb-6 md:pb-8">
-                    <div className="ml-16 border-l-4 border-gradient-to-b from-blue-500 to-cyan-500 pl-6">
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100">
-                        <p className="text-gray-700 leading-relaxed text-lg">
+                  <div className="px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8">
+                    <div className="ml-6 sm:ml-16 border-l-4 border-gradient-to-b from-blue-500 to-cyan-500 pl-4 sm:pl-6">
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 sm:p-6 rounded-lg sm:rounded-xl border border-blue-100">
+                        <p className="text-gray-700 leading-relaxed text-sm sm:text-lg">
                           {faq.answer}
                         </p>
                       </div>
@@ -108,8 +105,7 @@ const ModernFaqAccordion = () => {
               </div>
             ))}
           </div>
-          
-            </div>
+        </div>
       </div>
     </section>
   );

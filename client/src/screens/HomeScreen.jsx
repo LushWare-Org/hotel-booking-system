@@ -3,6 +3,7 @@ import {  Star, Menu, X, ArrowRight, ArrowLeft, Info, ShoppingBag,ChevronRight, 
 import BookingCalendar from './Bookingcalender';
 import FAQAccordion from './FAQAccordion';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 export default function Homepage(){
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +12,9 @@ export default function Homepage(){
   const [activeRoomTab, setActiveRoomTab] = useState(0);
   const [expandedFAQ, setExpandedFAQ] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const heroImages = [
     "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?q=80&w=1974&auto=format&fit=crop",
@@ -35,6 +39,16 @@ export default function Homepage(){
   };
 
   const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+  };
+
+  const handleReset = () => {
+    setFromDate(null);
+    setToDate(null);
+    setSearchTerm('');
+  };
 
   const testimonials = [
     {
@@ -207,7 +221,16 @@ export default function Homepage(){
 
         {/* Booking Calendar - Above Slide Indicators */}
         <div className="absolute bottom-28 left-1/2 transform -translate-x-1/2 z-20 w-full max-w-4xl px-4">
-          <BookingCalendar />
+          <BookingCalendar
+            fromDate={fromDate}
+            toDate={toDate}
+            setFromDate={setFromDate}
+            setToDate={setToDate}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={handleSearch}
+            resetSearch={handleReset}
+          />
         </div>
 
         {/* Slide indicators */}
@@ -290,24 +313,21 @@ export default function Homepage(){
           </div>
 
           {/* Image Side */}
-          <div className="relative">
-            <div className="relative group">
+          <div className="relative flex flex-col items-center gap-4 lg:block mt-12 lg:mt-0">
+            <div className="relative group w-full max-w-xs lg:max-w-none">
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-              
               <div className="relative bg-white p-2 rounded-3xl shadow-2xl">
                 <div className="rounded-2xl overflow-hidden">
                   <img 
                     src="https://images.unsplash.com/photo-1540202404-1b927e27fa8b?q=80&w=2063&auto=format&fit=crop"
                     alt="Luxury Maldives Villa"
-                    className="w-full h-96 lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-64 sm:h-80 lg:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  
                   {/* Image Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
               </div>
-        
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100">
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-gray-100 flex">
                 <div className="flex items-center space-x-2">
                   <Globe className="w-5 h-5 text-blue-500" />
                   <span className="font-bold text-gray-800">15+</span>
@@ -315,9 +335,16 @@ export default function Homepage(){
                 </div>
               </div>
             </div>
-            
             {/* Secondary Image */}
-            <div className="absolute top-8 -left-12 w-32 h-32 lg:w-40 lg:h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+            <div className="absolute top-8 -left-12 w-32 h-32 lg:w-40 lg:h-40 rounded-2xl overflow-hidden shadow-xl border-4 border-white hidden sm:block">
+              <img 
+                src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?q=80&w=2074&auto=format&fit=crop"
+                alt="Underwater Villa"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* For mobile, show the secondary image below the main image, in the same style */}
+            <div className="relative w-24 h-24 rounded-2xl overflow-hidden shadow-xl border-4 border-white mt-4 sm:hidden">
               <img 
                 src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?q=80&w=2074&auto=format&fit=crop"
                 alt="Underwater Villa"
@@ -327,7 +354,6 @@ export default function Homepage(){
           </div>
         </div>
 
-        
       </div>
   
 
@@ -394,8 +420,8 @@ export default function Homepage(){
               >
                 Book Now
               </button>
+                  </div>
                 </div>
-              </div>
               </div>
               
               {/* Room Details */}
@@ -415,7 +441,7 @@ export default function Homepage(){
                   {roomTypes[activeRoomTab].description}
                 </p>
                 
-                <h4 className="font-semibold text-xl mb-6">Villa Amenities</h4>
+                <h4 className="font-semibold text-xl mb- X6">Villa Amenities</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                   {roomTypes[activeRoomTab].amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center">

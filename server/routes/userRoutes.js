@@ -154,14 +154,14 @@ router.patch('/:id/admin', async (req, res) => {
   const { isAdmin } = req.body;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isAdmin },
+      { new: true, runValidators: false }
+    );
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    user.isAdmin = isAdmin;
-    await user.save();
-
     res.json({ message: 'Admin status updated successfully', user: { id: user.id, isAdmin: user.isAdmin } });
   } catch (error) {
     console.error('Error updating admin status:', error);

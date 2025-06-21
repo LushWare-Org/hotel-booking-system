@@ -63,17 +63,17 @@ export default function Navigation() {
   };
 
   const navLinkClass = ({ isActive }) =>
-    `relative px-6 py-2 font-medium text-sm uppercase tracking-wider transition-all duration-300 ${
+    `px-4 py-2 font-medium text-sm uppercase tracking-wide transition-colors duration-300 ${
       isActive
-        ? 'text-white bg-white/15 rounded-full backdrop-blur-sm border border-white/25'
-        : 'text-white/80 hover:text-white hover:bg-white/10 rounded-full hover:backdrop-blur-sm'
+        ? 'text-white border-b-2 border-white'
+        : 'text-white/80 hover:text-white'
     }`;
 
   const mobileNavLinkClass = ({ isActive }) =>
-    `text-xl font-medium transition-all duration-300 py-3 px-6 rounded-lg ${
+    `text-lg font-medium py-3 px-6 transition-colors duration-300 ${
       isActive 
-        ? 'text-white bg-white/15 backdrop-blur-sm border border-white/25' 
-        : 'text-white/90 hover:text-white hover:bg-white/10'
+        ? 'text-white border-b-2 border-white' 
+        : 'text-white/90 hover:text-white'
     }`;
 
   return (
@@ -98,7 +98,7 @@ export default function Navigation() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex justify-center flex-1 mr-0">
-          <div className="flex space-x-1 bg-white/5 backdrop-blur-sm rounded-full p-1 border border-white/10">
+          <div className="flex space-x-4">
             <NavLink to="/" className={navLinkClass} onClick={closeMenu}>
               Home
             </NavLink>
@@ -199,10 +199,10 @@ export default function Navigation() {
                   to="/account"
                   onClick={closeMenu}
                   className={({ isActive }) =>
-                    `text-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2 py-3 px-6 rounded-lg ${
+                    `text-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2 py-3 px-6 ${
                       isActive 
-                        ? 'text-white bg-white/15 backdrop-blur-sm border border-white/25' 
-                        : 'text-white/90 hover:text-white hover:bg-white/10'
+                        ? 'text-white border-b-2 border-white' 
+                        : 'text-white/90 hover:text-white'
                     }`
                   }
                 >

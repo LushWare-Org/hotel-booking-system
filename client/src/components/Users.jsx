@@ -37,7 +37,7 @@ const Users = () => {
 
   const handleToggleAdminStatus = async (userId, currentStatus) => {
     try {
-      await axios.patch(`http://localhost:8000/api/users/${userId}`, {
+      await axios.patch(`http://localhost:8000/api/users/${userId}/admin`, {
         isAdmin: !currentStatus,
       });
       message.success('Admin status updated successfully');

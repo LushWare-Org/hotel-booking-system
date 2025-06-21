@@ -14,8 +14,8 @@ const ManageNotifications = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/notifications');
-      setNotifications(response.data);
+      const response = await axios.get('/api/notifications/all');
+      setNotifications(response.data.data);
     } catch (error) {
       message.error('Failed to fetch notifications');
     } finally {
@@ -43,7 +43,7 @@ const ManageNotifications = () => {
       title: 'Recipients',
       dataIndex: 'recipients',
       key: 'recipients',
-      render: (recipients) => recipients.join(', '),
+      render: (recipients) => Array.isArray(recipients) ? recipients.join(', ') : '',
     },
     {
       title: 'Subject',

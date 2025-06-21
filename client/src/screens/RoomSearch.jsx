@@ -179,31 +179,31 @@ const RoomSearch = ({ setFilteredRooms, rooms, fromDate, toDate, bookings }) => 
   }, [rooms, fromDate, toDate, bookings]);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-blue-600">
+    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-8 border-l-4 border-blue-600 w-full max-w-[90vw] sm:max-w-4xl mx-auto my-4 sm:my-0">
       <div className="flex flex-col lg:flex-row gap-4 items-center mb-4">
         {/* Search input with icon */}
-        <div className="w-full lg:w-1/3 relative">
+        <div className="w-full relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search size={18} className="text-gray-400" />
+            <Search size={20} className="text-gray-400 sm:h-6 sm:w-6" />
           </div>
           <input
             type="text"
             value={localSearchTerm}
             onChange={(e) => setLocalSearchTerm(e.target.value)}
             placeholder="Search rooms by name or description"
-            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-sm"
           />
         </div>
 
         {/* Room Type Select */}
-        <div className="w-full lg:w-1/3 relative">
+        <div className="w-full relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Home size={18} className="text-gray-400" />
+            <Home size={20} className="text-gray-400 sm:h-6 sm:w-6" />
           </div>
           <select
             value={roomType}
             onChange={(e) => setRoomType(e.target.value)}
-            className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none hover:border-blue-300"
+            className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none hover:border-blue-300 text-sm"
             style={{
               backgroundImage: "url('data:image/svg+xml;charset=US-ASCII,<svg width=\"24\" height=\"24\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" color=\"%236366f1\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M19 9l-7 7-7-7\"></path></svg>')",
               backgroundRepeat: "no-repeat",
@@ -218,31 +218,31 @@ const RoomSearch = ({ setFilteredRooms, rooms, fromDate, toDate, bookings }) => 
           </select>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2 lg:gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
           {/* Filter Toggle Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+            className="w-full sm:w-auto flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm"
           >
-            <Filter size={18} className="mr-2" />
+            <Filter size={20} className="mr-2 sm:h-6 sm:w-6" />
             {showFilters ? 'Hide Filters' : 'More Filters'}
           </button>
 
           {/* Apply Filter Button */}
           <button
             onClick={handleFilter}
-            className="flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+            className="w-full sm:w-auto flex items-center justify-center px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg text-sm"
           >
-            <Check size={18} className="mr-2" />
+            <Check size={20} className="mr-2 sm:h-6 sm:w-6" />
             Apply
           </button>
 
           {/* Reset Button */}
           <button
             onClick={handleReset}
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:border-red-300 hover:text-red-500"
+            className="w-full sm:w-auto flex items-center justify-center px-4 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition-all duration-300 hover:border-red-300 hover:text-red-500 text-sm"
           >
-            <X size={18} className="mr-2" />
+            <X size={20} className="mr-2 sm:h-6 sm:w-6" />
             Reset
           </button>
         </div>
@@ -251,11 +251,11 @@ const RoomSearch = ({ setFilteredRooms, rooms, fromDate, toDate, bookings }) => 
       {/* Expanded Filters */}
       {showFilters && (
         <div className="mt-6 pt-6 border-t border-gray-200 transition-all duration-300">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Price Range Filter */}
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-700 mb-4 flex items-center">
-                <DollarSign size={18} className="mr-2 text-blue-600" />
+              <h3 className="font-semibold text-gray-700 mb-4 flex items-center text-sm">
+                <DollarSign size={20} className="mr-2 text-blue-600 sm:h-6 sm:w-6" />
                 Price Range: ${priceRange[0]} - ${priceRange[1]}
               </h3>
               <div className="px-4">
@@ -290,11 +290,11 @@ const RoomSearch = ({ setFilteredRooms, rooms, fromDate, toDate, bookings }) => 
 
             {/* Facilities Filter */}
             <div className="bg-gray-50 p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-700 mb-4 flex items-center">
-                <Wifi size={18} className="mr-2 text-blue-600" />
+              <h3 className="font-semibold text-gray-700 mb-4 flex items-center text-sm">
+                <Wifi size={20} className="mr-2 text-blue-600 sm:h-6 sm:w-6" />
                 Amenities & Facilities
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {facilities.map((facility) => (
                   <div
                     key={facility}
